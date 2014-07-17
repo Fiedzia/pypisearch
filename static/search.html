@@ -1,0 +1,22 @@
+<span class="pagination">
+  {{result.total}} packages found.
+  <span ng-if="result.pagination.total>1">
+    Showing page {{ result.pagination.current }} of {{ result.pagination.total}}
+    <span ng-if="result.pagination.prev_url"><a href="{{result.pagination.prev_url}}">previous</a></span>
+    <span ng-if="result.pagination.next_url"><a href="{{result.pagination.next_url}}">next</a></span>
+  </span>
+</span>
+
+<span ng-repeat="pkg in result.docs" class="packages">
+    <div class="pkg alert alert-success">
+        <div>
+			      <span><strong>{{ pkg.name  }}</strong></span> <span>{{ pkg.summary }}</span>
+        </div>
+        <div class="pkg-links">
+   	        <span>➟<a href="{{pkg.package_url}}">pypi</a></span>
+						<span ng-if="pkg.homepage">➟<a href="{{pkg.homepage}}">homepage</a></span>
+        </div>
+    </div>
+</span>
+
+

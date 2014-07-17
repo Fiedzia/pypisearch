@@ -1,0 +1,11 @@
+quote params in js
+expand description
+highlight
+analyzers: search for c/c++/.net
+document installation
+manage updates: delete old ones, use date in index
+keyboard shortcuts (next/prev page)
+popularity trends and rankings
+qualiy score for packages (downboost packages without description or homepage)
+more faceting: by python version, quality, popularity, keywords from title
+show popularity graph (bubbles)

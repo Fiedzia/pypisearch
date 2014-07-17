@@ -1,0 +1,5 @@
+Flask==0.10.1
+arrow==0.4.2
+bar==0.1.0
+-e git+https://github.com/aparo/pyes/#egg=pyes
+requests==2.3.0

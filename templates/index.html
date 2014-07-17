@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demo">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width = device-width, initial-scale = 1, user-scalable = no"/> 
+        <title>Unofficial python package search</title>
+        <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/static/css/search.css">
+
+        <script src="/static/lib/jquery/jquery-2.1.1.min.js"></script>
+        <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
+
+        <script src="/static/lib/angular/angular.min.js"></script>
+        <script src="/static/lib/angular/angular-route.min.js"></script>
+				<script>
+
+
+$(document).ready(function(){
+		$('#search_input').keyup(function(event) {
+		    if (event.keyCode == 13) {
+		        search()
+		    };
+		});
+		
+		$('#search_btn').click(function(event) {
+		    search()
+		});
+});
+
+
+function search(){
+		var val = $('#search_input')[0].value.trim();
+		if (val != "") {
+				window.location = '/#search/' + val;
+		}
+}
+
+
+function HomeController($scope) {}
+
+function AboutController($scope) {}
+
+function SearchController($scope, $routeParams, $http) {
+	  $('#search_input')[0].value = $routeParams.q;
+		url_config = {'url': '/query', 'params':{'q': $routeParams.q}}
+		if($routeParams.page != undefined) {
+			url_config['params']['page'] = $routeParams.page;
+		}
+
+		$http.get('/query', url_config).success(function(data){
+				$scope.result = data;
+		})
+}
+
+
+var homeRoute = '/';
+angular.module('demo', ['ngRoute']).config(
+    [
+        '$routeProvider',
+        function($routeProvider) {
+            $routeProvider.
+                when(homeRoute, {templateUrl: 'static/home.html', controller: HomeController}).
+                when('/about', {templateUrl: 'static/about.html', controller: AboutController}).
+                when('/search/:q', {templateUrl: 'static/search.html', controller: SearchController}).
+                when('/search/:q/page/:page', {templateUrl: 'static/search.html', controller: SearchController}).
+                otherwise({redirectTo: homeRoute});
+            }
+    ]);
+
+
+				</script>
+    </head>
+    <body>
+        <main>
+
+
+		<div class="jumbotron">
+
+        <a href="#/home"><span class="glyphicon glyphicon-home"></span> Home</a>
+        <a href="#/about"><span class="glyphicon glyphicon-font"></span> About</a>
+
+
+        <h1>Python package search</h1>
+        <p>Simple and fast python package search.</p>
+
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="search" id="search_input">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="search_btn">Search</button>
+      </span>
+    </div><!-- /input-group -->
+
+
+    </div>
+
+<div class="container">
+<div class="col-lg-6">
+</div>
+</div>
+
+		<div ng-view></div>
+        </main>
+    </body>
+</html>

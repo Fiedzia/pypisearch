@@ -1,0 +1,15 @@
+.pagination {
+	width: 90%;
+	text-align: center;
+}
+
+.pkg {
+    display: block;
+		width: 800px;
+		margin-left: auto;
+		margin-right: auto;
+}
+
+.pkg-links {
+	text-align: right;
+}
