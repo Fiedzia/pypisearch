@@ -11,7 +11,7 @@ import arrow
 import bar
 import pyes
 
-from esutils import get_es, set_refresh
+from esutils import get_es, set_refresh, create_index
 
 import config
 
@@ -79,6 +79,7 @@ def run():
     latest_id = os.path.split(os.path.realpath('packages/latest'))[-1]
     packages = next(os.walk('packages/latest'))[2]
     progressbar = bar.Bar(bar_max=len(packages))
+    create_index()
     set_refresh(False)
     try:
         for pkg in packages:
