@@ -48,8 +48,3 @@ ES_MAPPING = {
     }
 }
 
-#change to absolute path, ie. /var/cache/pypisearch
-BASEDIR = 'cache'
-
-#
-CACHE_DAYS = 5
