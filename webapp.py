@@ -29,6 +29,20 @@ def build_search_url(query, page=1):
     return url
 
 
+@app.route("/complete")
+def complete_view():
+    es = esutils.get_es()
+    if not 'q' in request.values:
+        return '?'
+    q = request.values['q']
+    raw = es.suggest('completions', q, 'name_suggest', type='completion', size=10, raw=True)
+    suggestions = raw['completions'][0]['options']
+    result = {
+        'suggestions': suggestions
+    }
+    return jsonify(result)
+    
+
 @app.route("/query")
 def query_view():
     page_size = 10

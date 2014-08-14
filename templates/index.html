@@ -7,33 +7,55 @@
         <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="/static/css/search.css">
+        <link rel="stylesheet" href="/static/lib/jquery-ui/jquery-ui.min.css">
+
 
         <script src="/static/lib/jquery/jquery-2.1.1.min.js"></script>
+        <script src="/static/lib/jquery-ui/jquery-ui.min.js"></script>
+
+
         <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
 
         <script src="/static/lib/angular/angular.min.js"></script>
         <script src="/static/lib/angular/angular-route.min.js"></script>
-				<script>
+        <script>
 
 
 $(document).ready(function(){
-		$('#search_input').keyup(function(event) {
-		    if (event.keyCode == 13) {
-		        search()
-		    };
-		});
-		
-		$('#search_btn').click(function(event) {
-		    search()
-		});
+
+    $('#search_input').keyup(function(event) {
+        if (event.keyCode == 13) {
+            search()
+        };
+    });
+    
+    $('#search_btn').click(function(event) {
+        search()
+    });
+
+    $('#search_input').autocomplete({
+       minLength:2,
+       source: function(request, response){
+          $.ajax({
+              url: '/complete',
+              dataType: 'json',
+              data: {q: request.term},
+              success: function(data){
+                  var res = [];
+                  $(data.suggestions).each(function(idx, val){ res.push(val.text) });
+                  response(res);
+              }
+          });
+       }
+    })
 });
 
 
 function search(){
-		var val = $('#search_input')[0].value.trim();
-		if (val != "") {
-				window.location = '/#search/' + val;
-		}
+    var val = $('#search_input')[0].value.trim();
+    if (val != "") {
+        window.location = '/#search/' + val;
+    }
 }
 
 
@@ -42,15 +64,15 @@ function HomeController($scope) {}
 function AboutController($scope) {}
 
 function SearchController($scope, $routeParams, $http) {
-	  $('#search_input')[0].value = $routeParams.q;
-		url_config = {'url': '/query', 'params':{'q': $routeParams.q}}
-		if($routeParams.page != undefined) {
-			url_config['params']['page'] = $routeParams.page;
-		}
+      $('#search_input')[0].value = $routeParams.q;
+        url_config = {'url': '/query', 'params':{'q': $routeParams.q}}
+        if($routeParams.page != undefined) {
+            url_config['params']['page'] = $routeParams.page;
+        }
 
-		$http.get('/query', url_config).success(function(data){
-				$scope.result = data;
-		})
+        $http.get('/query', url_config).success(function(data){
+            $scope.result = data;
+        })
 }
 
 
@@ -69,13 +91,13 @@ angular.module('demo', ['ngRoute']).config(
     ]);
 
 
-				</script>
+    </script>
     </head>
     <body>
         <main>
 
 
-		<div class="jumbotron">
+        <div class="jumbotron">
 
         <a href="#/home"><span class="glyphicon glyphicon-home"></span> Home</a>
         <a href="#/about"><span class="glyphicon glyphicon-font"></span> About</a>
@@ -99,7 +121,7 @@ angular.module('demo', ['ngRoute']).config(
 </div>
 </div>
 
-		<div ng-view></div>
+        <div ng-view></div>
         </main>
     </body>
 </html>

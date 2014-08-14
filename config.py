@@ -39,6 +39,7 @@ ES_MAPPING = {
             'version': {'type': 'string', 'index': 'not_analyzed'},
             'keywords': {'type': 'string'},
             'name': {'type': 'string'},
+            'name_suggest': {'type': 'completion', 'payloads': True},
             'downloads.last_month': {'type': 'integer'},
             'downloads.total': {'type': 'integer'},
             'latest_release': {'type': 'date'},

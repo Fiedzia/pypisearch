@@ -43,6 +43,11 @@ def parse(data, run_id):
         'version': data['info']['version'],
         'keywords': data['info']['keywords'],
         'name': data['info']['name'],
+        'name_suggest': {
+            'input':  data['info']['name'],
+            'weight':  0,
+            'payload': {'summary': data['info']['summary']}
+        },
         'downloads.last_month': data['info']['downloads']['last_month'],
         'downloads.total': 0,
         'latest_release': None,
@@ -66,6 +71,7 @@ def parse(data, run_id):
     if release_dates:
         result['latest_release'] = release_dates[0][1].datetime
     result['downloads.total'] = total_downloads
+    result['name_suggest']['weight'] = total_downloads
 
     return result
 
