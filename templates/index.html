@@ -47,7 +47,11 @@ $(document).ready(function(){
               }
           });
        }
-    })
+       }).each(function(){
+             $(this).autocomplete("instance")._renderItem = function(ul, item){
+            return $('<li>' + item.label + '</li>').appendTo(ul);
+            }
+          });
 });
 
 
