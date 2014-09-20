@@ -35,8 +35,10 @@ def run():
     parser = argparse.ArgumentParser(description='pypi index copy')
     parser.add_argument('-r', '--retry-failed', action='store_true',
                         help='Redownload packages that failed last time')
-    parser.add_argument('-c', '--continue', action='store_true', dest='_continue',
-                        help='Continue. Do not download package if there is local file for it.')
+    parser.add_argument('-c', '--continue', action='store_true',
+                        dest='_continue',
+                        help='Continue. Do not download package if '
+                             'there is local file for it.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Verbose output')
 
@@ -52,7 +54,8 @@ def run():
             with open(fail_fname, 'w') as fail_file:
                 package_names = json.load(fail_file)['packages']
         except:
-            print('Fail file {} is missing or invalid.'.format(fail_fname), file=sys.stderr)
+            print('Fail file {} is missing or invalid.'.format(fail_fname),
+                  file=sys.stderr)
             sys.exit(1)
 
     else:

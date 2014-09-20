@@ -26,7 +26,7 @@ def create_index():
 def construct_text_query(q):
     query = pyes.QueryStringQuery(
         q,
-        #totally made up numbers, but I want summary to be less influential
+        # totally made up numbers, but I want summary to be less influential
         search_fields=['name^10', 'summary^6', 'description^0.5'],
         allow_leading_wildcard=False,
         default_operator='AND')
@@ -38,4 +38,5 @@ def set_refresh(enabled=True):
     if enabled:
         value = config.ES_INDEX_SETTINGS['index']['refresh_interval']
     es = get_es()
-    es.indices.update_settings(config.ES_INDEX, {'index': {'refresh_interval': value}})
+    es.indices.update_settings(config.ES_INDEX,
+                               {'index': {'refresh_interval': value}})

@@ -7,7 +7,7 @@ from flask import Flask, render_template, jsonify, request
 import esutils
 import config
 
-from utils import validate_int
+from utils import validate_int, get_page_no
 
 
 app = Flask(__name__)
@@ -34,10 +34,11 @@ def build_search_url(query, page=1, licence=None):
 @app.route("/complete")
 def complete_view():
     es = esutils.get_es()
-    if not 'q' in request.values:
+    if 'q' not in request.values:
         return '?'
     q = request.values['q']
-    raw = es.suggest('completions', q, 'name_suggest', type='completion', size=10, raw=True)
+    raw = es.suggest('completions', q, 'name_suggest',
+                     type='completion', size=10, raw=True)
     suggestions = raw['completions'][0]['options']
     result = {
         'suggestions': suggestions
@@ -76,14 +77,20 @@ def query_view():
     results = es.search(search, indices=config.ES_INDEX,
                         doc_types=config.ES_INDEX)
     pagination = {
-        'current': search.start // search.size + int(bool(search.start % search.size)) + 1,
-        'total': results.total // search.size + int(bool(results.total % search.size)),
+        'current': get_page_no(search.start, search.size) + 1,
+        'total': get_page_no(results.total, search.size, base=0),
     }
     if pagination['total'] > 1:
         if pagination['current'] > 1:
-            pagination['prev_url'] = build_search_url(user_query, licence=licence, page=pagination['current'] - 1)
+            pagination['prev_url'] = build_search_url(
+                user_query,
+                licence=licence,
+                page=pagination['current'] - 1)
         if pagination['current'] < pagination['total']:
-            pagination['next_url'] = build_search_url(user_query, licence=licence, page=pagination['current'] + 1)
+            pagination['next_url'] = build_search_url(
+                user_query,
+                licence=licence,
+                page=pagination['current'] + 1)
     data = {
         'docs': list(results),
         'total': results.total,

@@ -56,7 +56,7 @@ def parse(data, run_id):
         'run_id': run_id,
     }
     if data['info']['license'] is not None:
-        #no, do not store WHOLE LICENCE CONTENT here.
+        # no, do not store WHOLE LICENCE CONTENT here.
         result['licence'] = data['info']['license'][:200]
     result['licence_sane'] = licence_sanitizer(result['licence'])
     total_downloads = 0
@@ -77,7 +77,7 @@ def parse(data, run_id):
 
 
 def push_to_es(data):
-    #TODO: use bulk indexing
+    # TODO: use bulk indexing
     get_es().index(data, config.ES_INDEX, config.ES_INDEX, id=data['name'])
 
 
@@ -95,9 +95,10 @@ def run():
                 push_to_es(parsed_data)
             progressbar.step()
         es = get_es()
-        es.delete_by_query(config.ES_INDEX, config.ES_DOC_TYPE, pyes.QueryStringQuery('-run_id:'+latest_id))
+        es.delete_by_query(config.ES_INDEX, config.ES_DOC_TYPE,
+                           pyes.QueryStringQuery('-run_id:'+latest_id))
         es.indices.optimize(config.ES_INDEX)
-        #fix weird pyes bug
+        # fix weird pyes bug
         es.bulker = None
         print('Done')
 

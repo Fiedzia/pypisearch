@@ -10,3 +10,13 @@ def validate_int(v, vmin=None, vmax=None, default=0):
         return default
 
     return value
+
+
+def get_page(start_idx, total, base=1):
+    """
+    Return page position for an item wih given index within set of total items
+    """
+    page_no = start_idx // total + int(bool(start_idx % total))
+    if base == 1:
+        page_no += 1
+    return page_no
