@@ -77,7 +77,7 @@ def query_view():
     results = es.search(search, indices=config.ES_INDEX,
                         doc_types=config.ES_INDEX)
     pagination = {
-        'current': get_page_no(search.start, search.size) + 1,
+        'current': get_page_no(search.start, search.size),
         'total': get_page_no(results.total, search.size, base=0),
     }
     if pagination['total'] > 1:
