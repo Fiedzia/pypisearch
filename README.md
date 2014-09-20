@@ -1,3 +1,5 @@
+Source code for pypisearch.linuxcoder.co.uk
+
 Download list of pypi packages and use local elasticsearch instance to search them
 
 Usage:
