@@ -12,7 +12,7 @@ def validate_int(v, vmin=None, vmax=None, default=0):
     return value
 
 
-def get_page(start_idx, total, base=1):
+def get_page_no(start_idx, total, base=1):
     """
     Return page position for an item wih given index within set of total items
     """
