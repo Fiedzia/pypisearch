@@ -75,6 +75,7 @@ def run():
             failed.append(name)
             errors += 1
     else:
+        os.unlink('packages/latest')
         os.symlink(run_dir, 'packages/latest')
     print('errors: ', errors)
     if failed:
