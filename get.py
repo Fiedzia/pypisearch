@@ -14,9 +14,19 @@ import requests
 PYPI = 'http://pypi.python.org/pypi'
 
 
-def get_pkg(session, run_dir, name):
+def get_pkg(session, run_dir, name, skip_if_exists=False):
+    fname = run_dir + '/' + name.lower() + '.json'
+    if skip_if_exists:
+        try:
+            if os.path.exists(fname):
+                with open(fname) as f:
+                    json.load(f)
+                return
+        except:
+            pass
+
     pkg_data = session.get(PYPI + '/' + name + '/json').json()
-    with open(run_dir + '/' + name.lower() + '.json', mode='w') as f:
+    with open(fname, mode='w') as f:
         json.dump(pkg_data, f, indent=4)
 
 
@@ -25,6 +35,8 @@ def run():
     parser = argparse.ArgumentParser(description='pypi index copy')
     parser.add_argument('-r', '--retry-failed', action='store_true',
                         help='Redownload packages that failed last time')
+    parser.add_argument('-c', '--continue', action='store_true', dest='_continue',
+                        help='Continue. Do not download package if there is local file for it.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Verbose output')
 
@@ -54,7 +66,7 @@ def run():
 
     for name in package_names:
         try:
-            get_pkg(session, run_dir, name)
+            get_pkg(session, run_dir, name, skip_if_exists=args._continue)
             progressbar.step()
         except KeyboardInterrupt:
             break

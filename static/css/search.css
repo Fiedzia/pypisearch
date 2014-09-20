@@ -13,3 +13,12 @@
 .pkg-links {
 	text-align: right;
 }
+
+.valign-top {
+	vertical-align: top;
+}
+
+.search-table {
+		margin-left: auto;
+		margin-right: auto;
+}

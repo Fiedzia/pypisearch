@@ -10,36 +10,49 @@ ES_INDEX_SETTINGS = {
         'refresh_interval': '60s',
     },
     'analysis': {
+        'tokenizer': {
+            'pattern': {
+                'type': 'pattern',
+                'pattern': '([\w\+\-\.]+)',
+                'group': 0,
+            }
+        },
         'analyzer': {
-            'content': {
+            'text': {
                 'type': 'custom',
-                'tokenizer': 'whitespace'
+                'tokenizer': 'pattern',
+                'filter': ['lowercase']
             }
         }
     }
 }
 
 """
-types: date(+format), integer, string, float, byte, short, integer, long, double, boolean,
+types: date(+format), integer, string, float, byte, short, integer, long,
+       double, boolean,
 index: analyzed|not_analyzed
 term_vector: yes|no
-analyzer, index_analyzer, search_analyzer   
+analyzer, index_analyzer, search_analyze
 
 """
 
 ES_MAPPING = {
     ES_DOC_TYPE: {
         'properties': {
-            'description': {'type': 'string'},
+            'description': {'type': 'string', 'analyzer': 'text'},
             'package_url': {'type': 'string', 'index': 'not_analyzed'},
             'licence': {'type': 'string', 'index': 'analyzed'},
             'licence_sane': {'type': 'string', 'index': 'not_analyzed'},
-            'summary': {'type': 'string'},
+            'summary': {'type': 'string', 'analyzer': 'text'},
             'homepage': {'type': 'string', 'index': 'not_analyzed'},
             'version': {'type': 'string', 'index': 'not_analyzed'},
             'keywords': {'type': 'string'},
-            'name': {'type': 'string'},
-            'name_suggest': {'type': 'completion', 'payloads': True},
+            'name': {'type': 'string', 'analyzer': 'text'},
+            'name_suggest': {
+                'type': 'completion',
+                'payloads': True,
+                'analyzer': 'text'
+            },
             'downloads.last_month': {'type': 'integer'},
             'downloads.total': {'type': 'integer'},
             'latest_release': {'type': 'date'},

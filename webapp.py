@@ -22,8 +22,10 @@ def index_view():
     return render_template('index.html')
 
 
-def build_search_url(query, page=1):
+def build_search_url(query, page=1, licence=None):
     url = '#/search/{}'.format(qs_quote(query))
+    if licence is not None:
+        url += '/licence/{}'.format(licence)
     if page > 1:
         url += '/page/{}'.format(qs_quote(str(page)))
     return url
@@ -41,7 +43,7 @@ def complete_view():
         'suggestions': suggestions
     }
     return jsonify(result)
-    
+
 
 @app.route("/query")
 def query_view():
@@ -58,10 +60,10 @@ def query_view():
     page = validate_int(request.values.get('page', 1),
                         vmin=1, vmax=100*1000, default=1)
     search.start = (page - 1) * page_size
-
-    if request.values.get('licence_sane', '').strip():
-        search.filter = TermFilter('licence_sane',
-                                   request.values['licence_sane'])
+    licence = None
+    if request.values.get('licence', '').strip():
+        licence = request.values['licence'].strip()
+        search.filter = TermFilter('licence_sane', licence)
 
     licence_agg = pyes.aggs.TermsAgg('licences', field='licence_sane', size=0)
     if search.filter is not None:
@@ -79,9 +81,9 @@ def query_view():
     }
     if pagination['total'] > 1:
         if pagination['current'] > 1:
-            pagination['prev_url'] = build_search_url(user_query, page=pagination['current'] - 1)
+            pagination['prev_url'] = build_search_url(user_query, licence=licence, page=pagination['current'] - 1)
         if pagination['current'] < pagination['total']:
-            pagination['next_url'] = build_search_url(user_query, page=pagination['current'] + 1)
+            pagination['next_url'] = build_search_url(user_query, licence=licence, page=pagination['current'] + 1)
     data = {
         'docs': list(results),
         'total': results.total,

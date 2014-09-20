@@ -25,10 +25,11 @@ $(document).ready(function(){
 
     $('#search_input').keyup(function(event) {
         if (event.keyCode == 13) {
+            $('#search_input').autocomplete('close');
             search()
         };
     });
-    
+
     $('#search_btn').click(function(event) {
         search()
     });
@@ -55,10 +56,25 @@ $(document).ready(function(){
 });
 
 
+function licence(){
+    //return licence value if any licence checkbox is on, else null
+    result = false
+    $('.facets-licence input[type=checkbox]').each(function(idx, val) {
+        if (val.checked) result = val.value; 
+    });
+    return result;
+    
+}
+
 function search(){
     var val = $('#search_input')[0].value.trim();
     if (val != "") {
-        window.location = '/#search/' + val;
+        url =  '/#search/' + val;
+        if (licence()) {
+            url += '/licence/' + licence();
+            alert(url);
+        }
+        window.location = url;
     }
 }
 
@@ -72,6 +88,9 @@ function SearchController($scope, $routeParams, $http) {
         url_config = {'url': '/query', 'params':{'q': $routeParams.q}}
         if($routeParams.page != undefined) {
             url_config['params']['page'] = $routeParams.page;
+        }
+        if($routeParams.licence != undefined) {
+            url_config['params']['licence'] = $routeParams.licence;
         }
 
         $http.get('/query', url_config).success(function(data){
@@ -89,6 +108,8 @@ angular.module('demo', ['ngRoute']).config(
                 when(homeRoute, {templateUrl: 'static/home.html', controller: HomeController}).
                 when('/about', {templateUrl: 'static/about.html', controller: AboutController}).
                 when('/search/:q', {templateUrl: 'static/search.html', controller: SearchController}).
+                when('/search/:q/licence/:licence', {templateUrl: 'static/search.html', controller: SearchController}).
+                when('/search/:q/licence/:licence/page/:page', {templateUrl: 'static/search.html', controller: SearchController}).
                 when('/search/:q/page/:page', {templateUrl: 'static/search.html', controller: SearchController}).
                 otherwise({redirectTo: homeRoute});
             }
